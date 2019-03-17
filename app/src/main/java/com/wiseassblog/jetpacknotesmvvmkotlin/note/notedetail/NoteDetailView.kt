@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -91,6 +92,11 @@ class NoteDetailView : Fragment() {
                 findNavController().navigate(R.id.noteListView)
             }
         )
+
+        requireActivity().addOnBackPressedCallback(viewLifecycleOwner, OnBackPressedCallback {
+            findNavController().navigate(R.id.noteListView)
+            true
+        })
     }
 
     private fun showErrorState(errorMessage: String?) {

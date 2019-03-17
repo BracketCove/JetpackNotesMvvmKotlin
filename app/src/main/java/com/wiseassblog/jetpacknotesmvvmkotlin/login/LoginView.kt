@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,9 +18,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.RC_SIGN_IN
-import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
 import com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic.LoginInjector
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.LoginResult
+import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
 //Note: if you want to support more than just English, you'll want to use Strings.xml instead of const val
@@ -37,8 +38,10 @@ class LoginView : Fragment() {
 
     private lateinit var viewModel: UserViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
@@ -53,6 +56,13 @@ class LoginView : Fragment() {
         )
 
         btn_auth_attempt.setOnClickListener { viewModel.handleEvent(LoginEvent.OnAuthButtonClick) }
+
+        imb_toolbar_back.setOnClickListener { startListActivity() }
+
+        requireActivity().addOnBackPressedCallback(viewLifecycleOwner, OnBackPressedCallback {
+            startListActivity()
+            true
+        })
 
         observeViewModel()
 
@@ -86,7 +96,7 @@ class LoginView : Fragment() {
         )
     }
 
-    private fun showErrorState(errorMessage: String?){
+    private fun showErrorState(errorMessage: String?) {
         setStatusDrawable(ANTENNA_EMPTY)
         setLoginStatus(errorMessage!!)
     }
@@ -125,6 +135,14 @@ class LoginView : Fragment() {
             resources.getIdentifier(imageURL, "drawable", activity?.packageName)
         )
     }
+
+    private fun startListActivity() = requireActivity().startActivity(
+        Intent(
+            activity,
+            NoteActivity::class.java
+        )
+    )
+
 
     private fun startSignInFlow() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
