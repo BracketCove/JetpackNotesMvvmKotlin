@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Task
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.FirebaseNote
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
+import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNote
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.User
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -49,6 +50,28 @@ internal val Note.toFirebaseNote: FirebaseNote
         this.imageUrl,
         this.safeGetUid
     )
+
+internal val RoomNote.toNote: Note
+    get() = Note(
+        this.creationDate,
+        this.contents,
+        this.upVotes,
+        this.imageUrl,
+        User(this.creatorId)
+    )
+
+internal val Note.toRoomNote: RoomNote
+    get() = RoomNote(
+        this.creationDate,
+        this.contents,
+        this.upVotes,
+        this.imageUrl,
+        this.safeGetUid
+    )
+
+internal fun List<RoomNote>.toNoteListFromRoomNote(): List<Note> = this.flatMap {
+    listOf(it.toNote)
+}
 
 internal fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 

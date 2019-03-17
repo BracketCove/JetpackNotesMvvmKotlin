@@ -1,23 +1,24 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic
 
-import android.content.Context
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.implementations.FirebaseAuthRepositoryImpl
+import com.wiseassblog.jetpacknotesmvvmkotlin.model.implementations.FirebaseUserRepoImpl
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.repository.IUserRepository
 
-object LoginInjector {
+class LoginInjector(application: Application): AndroidViewModel(application) {
 
-    private fun getUserRepository(context: Context): IUserRepository {
-        FirebaseApp.initializeApp(context)
-        return FirebaseAuthRepositoryImpl(FirebaseAuth.getInstance())
+    init {
+        FirebaseApp.initializeApp(application)
     }
 
-    fun provideUserViewModelFactory(context: Context): UserViewModelFactory =
+    private fun getUserRepository(): IUserRepository {
+        return FirebaseUserRepoImpl()
+    }
+
+    fun provideUserViewModelFactory(): UserViewModelFactory =
         UserViewModelFactory(
-            getUserRepository(
-                context
-            )
+            getUserRepository()
         )
 
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
@@ -13,7 +14,7 @@ import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
 import kotlinx.android.synthetic.main.item_note.view.*
 
 
-class NoteListAdapter(var event: NoteListEvent?) :
+class NoteListAdapter(var event: MutableLiveData<NoteListEvent> = MutableLiveData()) :
     ListAdapter<Note, NoteListAdapter.NoteViewHolder>(NoteDiffUtilCallback()) {
 
     override fun onBindViewHolder(holder: NoteListAdapter.NoteViewHolder, position: Int) {
@@ -24,7 +25,7 @@ class NoteListAdapter(var event: NoteListEvent?) :
                 holder.square.setImageResource(R.drawable.gps_icon)
                 holder.content.text = note.contents
                 holder.itemView.setOnClickListener {
-                    event = NoteListEvent.OnNoteItemClick(position)
+                    event.value = NoteListEvent.OnNoteItemClick(position)
                 }
             }
         }

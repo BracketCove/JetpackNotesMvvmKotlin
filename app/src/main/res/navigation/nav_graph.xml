@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/loginView">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/noteListView">
 
     <activity android:id="@+id/loginView" android:name="com.wiseassblog.jetpacknotesmvvmkotlin.login.LoginActivity"
               android:label="LoginFeature"
@@ -18,6 +18,7 @@
 
         <argument android:name="noteId" app:argType="string"/>
     </fragment>
+
     <fragment android:id="@+id/noteListView"
               android:name="com.wiseassblog.jetpacknotesmvvmkotlin.note.notelist.NoteListView"
               android:label="NoteListView"

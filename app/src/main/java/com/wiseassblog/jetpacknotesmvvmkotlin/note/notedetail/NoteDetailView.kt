@@ -12,16 +12,21 @@ import androidx.navigation.fragment.findNavController
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.toEditable
-import com.wiseassblog.jetpacknotesmvvmkotlin.login.UserViewModel
-import com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic.LoginInjector
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.buildlogic.NoteDetailInjector
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_note_detail.*
 
 class NoteDetailView : Fragment() {
 
     private lateinit var viewModel: NoteViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_note_detail, container, false)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -38,7 +43,7 @@ class NoteDetailView : Fragment() {
         imb_toolbar_done.setOnClickListener {
             viewModel.handleEvent(
                 NoteDetailEvent.OnDoneClick(
-                    edt_note_detail_text.toString()
+                    edt_note_detail_text.text.toString()
                 )
             )
         }
@@ -72,6 +77,20 @@ class NoteDetailView : Fragment() {
                 satelliteLoop.stop()
             }
         )
+
+        viewModel.updated.observe(
+            viewLifecycleOwner,
+            Observer {
+                findNavController().navigate(R.id.noteListView)
+            }
+        )
+
+        viewModel.deleted.observe(
+            viewLifecycleOwner,
+            Observer {
+                findNavController().navigate(R.id.noteListView)
+            }
+        )
     }
 
     private fun showErrorState(errorMessage: String?) {
@@ -80,10 +99,6 @@ class NoteDetailView : Fragment() {
     }
 
     private fun showLoadingState() {
-        imv_antenna_animation.setImageResource(
-            resources.getIdentifier("antenna_loop_fast", "drawable", activity?.packageName)
-        )
-
         val satelliteLoop = imv_note_detail_satellite.drawable as AnimationDrawable
         satelliteLoop.start()
     }

@@ -10,6 +10,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity android:name="com.wiseassblog.jetpacknotesmvvmkotlin.login.LoginActivity">
+
         </activity>
         <activity android:name="com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteActivity">
             <intent-filter>

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 
@@ -16,9 +17,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -47,6 +47,9 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.firebaseCrash"
     implementation "com.google.firebase:firebase-firestore:$rootProject.firebaseFirestore"
     implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuth"
+    implementation "androidx.room:room-runtime:$rootProject.room"
+    kapt "androidx.room:room-compiler:$rootProject.room"
+
 
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
@@ -55,3 +58,5 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$rootProject.junitVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'

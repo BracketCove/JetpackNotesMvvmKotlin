@@ -5,7 +5,9 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.RC_SIGN_IN
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
 import com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic.LoginInjector
@@ -34,12 +37,17 @@ class LoginView : Fragment() {
 
     private lateinit var viewModel: UserViewModel
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
     //Create and bind to ViewModel
     override fun onStart() {
         super.onStart()
         viewModel = ViewModelProviders.of(
             this,
-            LoginInjector.provideUserViewModelFactory(requireContext())
+            LoginInjector(requireActivity().application).provideUserViewModelFactory()
         ).get(
             UserViewModel::class.java
         )
@@ -78,7 +86,10 @@ class LoginView : Fragment() {
         )
     }
 
-    private fun showErrorState(errorMessage: String?) = makeToast(errorMessage!!)
+    private fun showErrorState(errorMessage: String?){
+        setStatusDrawable(ANTENNA_EMPTY)
+        setLoginStatus(errorMessage!!)
+    }
 
     private fun showLoadingState() {
         imv_antenna_animation.setImageResource(
@@ -99,7 +110,6 @@ class LoginView : Fragment() {
         setLoginStatus(SIGNED_OUT)
         setAuthButton(SIGN_IN)
         setStatusDrawable(ANTENNA_EMPTY)
-
     }
 
     fun setLoginStatus(text: String) {
@@ -117,9 +127,8 @@ class LoginView : Fragment() {
     }
 
     private fun startSignInFlow() {
-        TODO("Implement requestIdToken when firebase is set up")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            //.requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .build()
 
         val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
@@ -140,7 +149,7 @@ class LoginView : Fragment() {
             if (account != null) userToken = account.idToken
 
         } catch (exception: Exception) {
-            Log.d("Login", exception.message)
+            Log.d("Login", exception.toString())
         }
 
         viewModel.handleEvent(
