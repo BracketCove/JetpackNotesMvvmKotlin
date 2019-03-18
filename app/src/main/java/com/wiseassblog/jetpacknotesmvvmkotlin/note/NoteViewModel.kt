@@ -68,7 +68,7 @@ class NoteViewModel(
 
     private suspend fun newNote() {
         note.value =
-            Note(getCalendarTime(), "", 0, "satellite_beam", null)
+            Note(getCalendarTime(), "", 0, "rocket_loop", null)
     }
 
 

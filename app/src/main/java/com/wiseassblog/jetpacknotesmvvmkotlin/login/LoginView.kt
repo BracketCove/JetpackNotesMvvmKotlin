@@ -64,6 +64,11 @@ class LoginView : Fragment() {
             true
         })
 
+        val spaceLoop = root_fragment_login.background as AnimationDrawable
+        spaceLoop.setEnterFadeDuration(1000)
+        spaceLoop.setExitFadeDuration(1000)
+        spaceLoop.start()
+
         observeViewModel()
 
         viewModel.handleEvent(LoginEvent.OnStart)

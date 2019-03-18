@@ -22,7 +22,6 @@ class NoteListAdapter(var event: MutableLiveData<NoteListEvent> = MutableLiveDat
             with(holder) {
                 holder.content.text = note.contents
                 holder.date.text = note.creationDate
-                holder.square.setImageResource(R.drawable.gps_icon)
                 holder.content.text = note.contents
                 holder.itemView.setOnClickListener {
                     event.value = NoteListEvent.OnNoteItemClick(position)

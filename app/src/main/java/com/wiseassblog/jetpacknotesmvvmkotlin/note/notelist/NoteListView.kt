@@ -31,11 +31,16 @@ class NoteListView : Fragment() {
         return inflater.inflate(R.layout.fragment_note_list, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rec_list_fragment.adapter = null
+    }
+
     override fun onStart() {
         super.onStart()
         viewModel = ViewModelProviders.of(
             this,
-            NoteListInjector.provideNoteListViewModelFactory(requireContext())
+            NoteListInjector(requireActivity().application).provideNoteListViewModelFactory()
         ).get(
             NoteListViewModel::class.java
         )

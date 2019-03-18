@@ -16,6 +16,7 @@ import com.wiseassblog.jetpacknotesmvvmkotlin.common.toEditable
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.buildlogic.NoteDetailInjector
 import kotlinx.android.synthetic.main.fragment_note_detail.*
+import kotlinx.android.synthetic.main.fragment_note_list.*
 
 class NoteDetailView : Fragment() {
 
@@ -34,7 +35,7 @@ class NoteDetailView : Fragment() {
 
         viewModel = ViewModelProviders.of(
             this,
-            NoteDetailInjector.provideNoteViewModelFactory(requireContext())
+            NoteDetailInjector(requireActivity().application).provideNoteViewModelFactory()
         ).get(
             NoteViewModel::class.java
         )
@@ -57,6 +58,11 @@ class NoteDetailView : Fragment() {
 
         observeViewModel()
 
+        val spaceLoop = frag_note_detail.background as AnimationDrawable
+        spaceLoop.setEnterFadeDuration(1000)
+        spaceLoop.setExitFadeDuration(1000)
+        spaceLoop.start()
+
         viewModel.handleEvent(
             NoteDetailEvent.OnStart(
                 //note NoteDetailViewArgs is genereted via Navigation component
@@ -77,9 +83,6 @@ class NoteDetailView : Fragment() {
             viewLifecycleOwner,
             Observer { note ->
                 edt_note_detail_text.text = note.contents.toEditable()
-
-                val satelliteLoop = imv_note_detail_satellite.drawable as AnimationDrawable
-                satelliteLoop.stop()
             }
         )
 
