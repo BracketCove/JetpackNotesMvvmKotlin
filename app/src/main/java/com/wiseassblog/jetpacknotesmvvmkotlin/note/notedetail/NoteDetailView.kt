@@ -12,11 +12,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
+import com.wiseassblog.jetpacknotesmvvmkotlin.common.startWithFade
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.toEditable
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.buildlogic.NoteDetailInjector
 import kotlinx.android.synthetic.main.fragment_note_detail.*
-import kotlinx.android.synthetic.main.fragment_note_list.*
 
 class NoteDetailView : Fragment() {
 
@@ -58,10 +58,7 @@ class NoteDetailView : Fragment() {
 
         observeViewModel()
 
-        val spaceLoop = frag_note_detail.background as AnimationDrawable
-        spaceLoop.setEnterFadeDuration(1000)
-        spaceLoop.setExitFadeDuration(1000)
-        spaceLoop.start()
+        (frag_note_detail.background as AnimationDrawable).startWithFade()
 
         viewModel.handleEvent(
             NoteDetailEvent.OnStart(
@@ -112,7 +109,6 @@ class NoteDetailView : Fragment() {
     }
 
     private fun showLoadingState() {
-        val satelliteLoop = imv_note_detail_satellite.drawable as AnimationDrawable
-        satelliteLoop.start()
+        (imv_note_detail_satellite.drawable as AnimationDrawable).start()
     }
 }

@@ -1,13 +1,12 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.note
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.BaseViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.GET_NOTE_ERROR
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.Result
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.User
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.repository.INoteRepository
-import com.wiseassblog.jetpacknotesmvvmkotlin.model.repository.IUserRepository
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
+import com.wiseassblog.jetpacknotesmvvmkotlin.model.repository.INoteRepository
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailEvent
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -19,11 +18,16 @@ class NoteViewModel(
     uiContext: CoroutineContext
 ) : BaseViewModel<NoteDetailEvent>(uiContext) {
 
-    val note = MutableLiveData<Note>()
+    private val noteState = MutableLiveData<Note>()
+    val note: LiveData<Note> get() = noteState
 
-    val deleted = MutableLiveData<Boolean>()
+    private val deletedState = MutableLiveData<Boolean>()
+    val deleted: LiveData<Boolean> get() = deletedState
 
-    val updated = MutableLiveData<Boolean>()
+
+    private val updatedState = MutableLiveData<Boolean>()
+    val updated: LiveData<Boolean> get() = updatedState
+
 
     override fun handleEvent(event: NoteDetailEvent) {
         when (event) {
@@ -37,8 +41,8 @@ class NoteViewModel(
         val deleteResult = noteRepo.deleteNote(note.value!!)
 
         when (deleteResult) {
-            is Result.Value -> deleted.value = true
-            is Result.Error -> deleted.value = false
+            is Result.Value -> deletedState.value = true
+            is Result.Error -> deletedState.value = false
         }
     }
 
@@ -49,8 +53,8 @@ class NoteViewModel(
         )
 
         when (updateResult) {
-            is Result.Value -> updated.value = true
-            is Result.Error -> updated.value = false
+            is Result.Value -> updatedState.value = true
+            is Result.Error -> updatedState.value = false
         }
     }
 
@@ -60,14 +64,14 @@ class NoteViewModel(
             val noteResult = noteRepo.getNoteById(noteId)
 
             when (noteResult) {
-                is Result.Value -> note.value = noteResult.value
-                is Result.Error -> error.value = GET_NOTE_ERROR
+                is Result.Value -> noteState.value = noteResult.value
+                is Result.Error -> errorState.value = GET_NOTE_ERROR
             }
         }
     }
 
     private suspend fun newNote() {
-        note.value =
+        noteState.value =
             Note(getCalendarTime(), "", 0, "rocket_loop", null)
     }
 

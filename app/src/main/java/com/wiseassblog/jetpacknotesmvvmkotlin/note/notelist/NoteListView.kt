@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
+import com.wiseassblog.jetpacknotesmvvmkotlin.common.startWithFade
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteListViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailEvent
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailViewArgs
@@ -45,10 +46,7 @@ class NoteListView : Fragment() {
             NoteListViewModel::class.java
         )
 
-        val spaceLoop = imv_space_background.drawable as AnimationDrawable
-        spaceLoop.setEnterFadeDuration(1000)
-        spaceLoop.setExitFadeDuration(1000)
-        spaceLoop.start()
+        (imv_space_background.drawable as AnimationDrawable).startWithFade()
 
         showLoadingState()
         setUpAdapter()
@@ -92,12 +90,11 @@ class NoteListView : Fragment() {
             viewLifecycleOwner,
             Observer { noteList ->
                 adapter.submitList(noteList)
-                rec_list_fragment.visibility = View.VISIBLE
-
-                val satelliteLoop = imv_satellite_animation.drawable as AnimationDrawable
-                satelliteLoop.stop()
-
-                imv_satellite_animation.visibility = View.INVISIBLE
+                if (noteList.size > 0){
+                    (imv_satellite_animation.drawable as AnimationDrawable).stop()
+                    imv_satellite_animation.visibility = View.INVISIBLE
+                    rec_list_fragment.visibility = View.VISIBLE
+                }
             }
         )
 
@@ -118,8 +115,7 @@ class NoteListView : Fragment() {
 
 
     private fun showLoadingState() {
-        val satelliteLoop = imv_satellite_animation.drawable as AnimationDrawable
-        satelliteLoop.start()
+        (imv_satellite_animation.drawable as AnimationDrawable).start()
     }
 
 }

@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.RC_SIGN_IN
+import com.wiseassblog.jetpacknotesmvvmkotlin.common.startWithFade
 import com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic.LoginInjector
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.LoginResult
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteActivity
@@ -33,6 +34,7 @@ private const val ERROR_AUTH = "An Error Has Occured"
 private const val RETRY = "RETRY"
 private const val ANTENNA_EMPTY = "antenna_empty"
 private const val ANTENNA_FULL = "antenna_full"
+private const val ANTENNA_LOOP = "antenna_loop_fast"
 
 class LoginView : Fragment() {
 
@@ -64,10 +66,8 @@ class LoginView : Fragment() {
             true
         })
 
-        val spaceLoop = root_fragment_login.background as AnimationDrawable
-        spaceLoop.setEnterFadeDuration(1000)
-        spaceLoop.setExitFadeDuration(1000)
-        spaceLoop.start()
+        //start background anim
+        (root_fragment_login.background as AnimationDrawable).startWithFade()
 
         observeViewModel()
 
@@ -107,12 +107,8 @@ class LoginView : Fragment() {
     }
 
     private fun showLoadingState() {
-        imv_antenna_animation.setImageResource(
-            resources.getIdentifier("antenna_loop_fast", "drawable", activity?.packageName)
-        )
-
-        val satelliteLoop = imv_antenna_animation.drawable as AnimationDrawable
-        satelliteLoop.start()
+        setStatusDrawable(ANTENNA_LOOP)
+        (imv_antenna_animation.drawable as AnimationDrawable).start()
     }
 
     private fun showUserState() {

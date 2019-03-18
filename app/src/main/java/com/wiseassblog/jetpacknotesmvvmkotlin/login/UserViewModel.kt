@@ -1,5 +1,6 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.login
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.*
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.LoginResult
@@ -13,15 +14,16 @@ class UserViewModel(
     val repo: IUserRepository,
     uiContext: CoroutineContext
 ) : BaseViewModel<LoginEvent<LoginResult>>(uiContext) {
-    //Note: I'm using MutableLiveData since my backend does not return LiveData objects.
-    //View States:
-    val user = MutableLiveData<User>()
 
-    val authAttempt = MutableLiveData<Unit>()
+    private val userState = MutableLiveData<User>()
+    val user: LiveData<User> get() = userState
+
+    private val authAttemptState = MutableLiveData<Unit>()
+    val authAttempt: LiveData<Unit> get() = authAttemptState
 
     override fun handleEvent(event: LoginEvent<LoginResult>) {
         //Trigger loading screen
-        loading.value = Unit
+        loadingState.value = Unit
         when (event) {
             is LoginEvent.OnStart -> getUser()
             is LoginEvent.OnAuthButtonClick -> onAuthButtonClick()
@@ -38,15 +40,15 @@ class UserViewModel(
 
             when (createGoogleUserResult) {
                 is Result.Value -> getUser()
-                is Result.Error -> error.value = LOGIN_ERROR
+                is Result.Error -> errorState.value = LOGIN_ERROR
             }
         } else {
-            error.value = LOGIN_ERROR
+            errorState.value = LOGIN_ERROR
         }
     }
 
     private fun onAuthButtonClick() {
-        if (user.value == null) authAttempt.value = Unit
+        if (user.value == null) authAttemptState.value = Unit
         else deleteUser()
     }
 
@@ -54,16 +56,16 @@ class UserViewModel(
         val result = repo.signOutCurrentUser()
 
         when (result) {
-            is Result.Value -> user.value = null
-            is Result.Error -> error.value = LOGOUT_ERROR
+            is Result.Value -> userState.value = null
+            is Result.Error -> errorState.value = LOGOUT_ERROR
         }
     }
 
     private fun getUser() = launch {
         val result = repo.getCurrentUser()
         when (result) {
-            is Result.Value -> user.value = result.value
-            is Result.Error -> error.value = LOGIN_ERROR
+            is Result.Value -> userState.value = result.value
+            is Result.Error -> errorState.value = LOGIN_ERROR
         }
     }
 }

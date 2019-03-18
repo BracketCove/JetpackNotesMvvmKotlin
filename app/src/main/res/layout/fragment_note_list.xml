@@ -81,11 +81,10 @@
 
     <ImageView
             android:id="@+id/imv_satellite_animation"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
             android:alpha=".86"
             android:src="@drawable/rocket_loop"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

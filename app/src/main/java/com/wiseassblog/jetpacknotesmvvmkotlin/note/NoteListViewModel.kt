@@ -1,5 +1,6 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.note
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.BaseViewModel
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.GET_NOTES_ERROR
@@ -15,9 +16,12 @@ class NoteListViewModel(
     uiContext: CoroutineContext
 ) : BaseViewModel<NoteListEvent>(uiContext) {
 
-    val noteList = MutableLiveData<List<Note>>()
+    private val noteListState = MutableLiveData<List<Note>>()
+    val noteList: LiveData<List<Note>> get() = noteListState
 
-    val editNote = MutableLiveData<String>()
+    private val editNoteState = MutableLiveData<String>()
+    val editNote: LiveData<String> get() = editNoteState
+
 
     override fun handleEvent(event: NoteListEvent) {
         when (event) {
@@ -27,15 +31,15 @@ class NoteListViewModel(
     }
 
     private fun editNote(position: Int) {
-        editNote.value = noteList.value!![position].creationDate
+        editNoteState.value = noteList.value!![position].creationDate
     }
 
     private fun getNotes() = launch {
         val notesResult = noteRepo.getNotes()
 
         when (notesResult) {
-            is Result.Value -> noteList.value = notesResult.value
-            is Result.Error -> error.value = GET_NOTES_ERROR
+            is Result.Value -> noteListState.value = notesResult.value
+            is Result.Error -> errorState.value = GET_NOTES_ERROR
         }
     }
 }

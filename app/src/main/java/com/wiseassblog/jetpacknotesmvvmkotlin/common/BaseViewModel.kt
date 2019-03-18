@@ -1,5 +1,6 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.common
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +16,14 @@ abstract class BaseViewModel<T>(protected val uiContext: CoroutineContext): View
         jobTracker = Job()
     }
 
-    val error = MutableLiveData<String>()
+    //suggestion from Al Warren: to promote encapsulation and immutability, hide the MutableLiveData objects behind
+    //LiveData references:
+    protected val errorState = MutableLiveData<String>()
+    val error: LiveData<String> get() = errorState
 
-    val loading = MutableLiveData<Unit>()
+    protected val loadingState = MutableLiveData<Unit>()
+    val loading: LiveData<Unit> get() = loadingState
+
 
     override val coroutineContext: CoroutineContext
         get() = uiContext + jobTracker

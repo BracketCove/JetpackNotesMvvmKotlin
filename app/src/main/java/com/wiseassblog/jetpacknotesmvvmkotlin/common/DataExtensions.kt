@@ -1,8 +1,6 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.common
 
 import android.text.Editable
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Task
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.FirebaseNote
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
@@ -78,6 +76,3 @@ internal fun String.toEditable(): Editable = Editable.Factory.getInstance().newE
 internal val Note.safeGetUid: String
     get() = this.creator?.uid ?: ""
 
-internal fun Fragment.makeToast(value: String) {
-    Toast.makeText(activity, value, Toast.LENGTH_SHORT).show()
-}
