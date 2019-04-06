@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="AuthButton" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textSize">36sp</item>
+    </style>
+
     <style name="Text">
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
     </style>
 

@@ -50,10 +50,6 @@ class NoteDetailView : Fragment() {
             )
         }
 
-        imb_toolbar_back.setOnClickListener {
-            findNavController().navigate(R.id.noteListView)
-        }
-
         imb_toolbar_delete.setOnClickListener { viewModel.handleEvent(NoteDetailEvent.OnDeleteClick) }
 
         observeViewModel()

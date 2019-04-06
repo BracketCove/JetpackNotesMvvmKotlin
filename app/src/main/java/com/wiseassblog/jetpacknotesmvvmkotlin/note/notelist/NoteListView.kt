@@ -70,7 +70,7 @@ class NoteListView : Fragment() {
         adapter = NoteListAdapter()
         adapter.event.observe(
             viewLifecycleOwner,
-            Observer{
+            Observer {
                 viewModel.handleEvent(it)
             }
         )
@@ -90,7 +90,7 @@ class NoteListView : Fragment() {
             viewLifecycleOwner,
             Observer { noteList ->
                 adapter.submitList(noteList)
-                if (noteList.size > 0){
+                if (noteList.isNotEmpty()) {
                     (imv_satellite_animation.drawable as AnimationDrawable).stop()
                     imv_satellite_animation.visibility = View.INVISIBLE
                     rec_list_fragment.visibility = View.VISIBLE
@@ -106,16 +106,14 @@ class NoteListView : Fragment() {
         )
     }
 
-    private fun startNoteDetailWithArgs(noteId: String) {
-        val direction = NoteListViewDirections.actionNoteListViewToNoteDetailView(noteId)
-        findNavController().navigate(direction)
-    }
+    private fun startNoteDetailWithArgs(noteId: String) = findNavController().navigate(
+        NoteListViewDirections.actionNoteListViewToNoteDetailView(noteId)
+    )
+
 
     private fun showErrorState(errorMessage: String?) = makeToast(errorMessage!!)
 
 
-    private fun showLoadingState() {
-        (imv_satellite_animation.drawable as AnimationDrawable).start()
-    }
+    private fun showLoadingState() = (imv_satellite_animation.drawable as AnimationDrawable).start()
 
 }

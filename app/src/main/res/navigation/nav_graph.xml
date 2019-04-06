@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/noteListView">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+            app:startDestination="@id/noteListView">
+
 
     <activity android:id="@+id/loginView" android:name="com.wiseassblog.jetpacknotesmvvmkotlin.login.LoginActivity"
-              android:label="LoginFeature"
-              tools:layout="@layout/fragment_login"
-    />
+              android:label="activity_login" tools:layout="@layout/fragment_login"
+
+        />
     <fragment android:id="@+id/noteDetailView"
               android:name="com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailView"
               android:label="NoteDetailView"
               tools:layout="@layout/fragment_note_detail"
     >
-        <action android:id="@+id/action_noteDetailView_to_noteListView" app:destination="@id/noteListView"
-                app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"
-                app:popEnterAnim="@anim/nav_default_enter_anim" app:popExitAnim="@anim/nav_default_exit_anim"/>
-
-        <argument android:name="noteId" app:argType="string"/>
+        <action android:id="@+id/action_noteDetailView_to_noteListView2" app:destination="@id/noteListView"/>
+        <argument android:name="noteId" app:argType="string" android:defaultValue='""'/>
     </fragment>
-
     <fragment android:id="@+id/noteListView"
               android:name="com.wiseassblog.jetpacknotesmvvmkotlin.note.notelist.NoteListView"
               android:label="NoteListView"
               tools:layout="@layout/fragment_note_list"
-
     >
-        <action android:id="@+id/action_noteListView_to_noteDetailView" app:destination="@id/noteDetailView"
-                app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"
-                app:popEnterAnim="@anim/nav_default_enter_anim" app:popExitAnim="@anim/nav_default_exit_anim"/>
-        <action android:id="@+id/action_noteListView_to_loginView" app:destination="@id/loginView"
-                app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"
-                app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_noteListView_to_noteDetailView" app:destination="@id/noteDetailView"/>
+        <action android:id="@+id/action_noteListView_to_loginActivity" app:destination="@id/loginView"/>
     </fragment>
 </navigation>

@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
+import com.wiseassblog.jetpacknotesmvvmkotlin.common.ANTENNA_LOOP
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.RC_SIGN_IN
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.startWithFade
 import com.wiseassblog.jetpacknotesmvvmkotlin.login.buildlogic.LoginInjector
@@ -25,16 +26,7 @@ import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
 //Note: if you want to support more than just English, you'll want to use Strings.xml instead of const val
-private const val SIGN_OUT = "SIGN OUT"
-private const val SIGN_IN = "SIGN IN"
-private const val SIGNED_IN = "Signed In"
-private const val SIGNED_OUT = "Signed Out"
-private const val ERROR_NETWORK_UNAVAILABLE = "Network Unavailable"
-private const val ERROR_AUTH = "An Error Has Occured"
-private const val RETRY = "RETRY"
-private const val ANTENNA_EMPTY = "antenna_empty"
-private const val ANTENNA_FULL = "antenna_full"
-private const val ANTENNA_LOOP = "antenna_loop_fast"
+
 
 class LoginView : Fragment() {
 
@@ -53,10 +45,18 @@ class LoginView : Fragment() {
         viewModel = ViewModelProviders.of(
             this,
             LoginInjector(requireActivity().application).provideUserViewModelFactory()
-        ).get(
-            UserViewModel::class.java
-        )
+        ).get(UserViewModel::class.java)
 
+        //start background anim
+        (root_fragment_login.background as AnimationDrawable).startWithFade()
+
+        setUpClickListeners()
+        observeViewModel()
+
+        viewModel.handleEvent(LoginEvent.OnStart)
+    }
+
+    private fun setUpClickListeners() {
         btn_auth_attempt.setOnClickListener { viewModel.handleEvent(LoginEvent.OnAuthButtonClick) }
 
         imb_toolbar_back.setOnClickListener { startListActivity() }
@@ -65,75 +65,46 @@ class LoginView : Fragment() {
             startListActivity()
             true
         })
-
-        //start background anim
-        (root_fragment_login.background as AnimationDrawable).startWithFade()
-
-        observeViewModel()
-
-        viewModel.handleEvent(LoginEvent.OnStart)
     }
 
     private fun observeViewModel() {
-        viewModel.user.observe(
+        viewModel.signInStatusText.observe(
             viewLifecycleOwner,
-            Observer { user ->
-                if (user == null) showNullUserState()
-                else showUserState()
+            Observer {
+                //"it" is the alue of the MutableLiveData object, which is inferred to be a String automatically
+                lbl_login_status_display.text = it
             }
         )
 
-        viewModel.loading.observe(
+        viewModel.authButtonText.observe(
             viewLifecycleOwner,
-            Observer { showLoadingState() }
-        )
-
-        viewModel.error.observe(
-            viewLifecycleOwner,
-            Observer { errorMessage ->
-                showErrorState(errorMessage)
+            Observer {
+                btn_auth_attempt.text = it
             }
         )
 
-        viewModel.authAttempt.observe(
+        viewModel.startAnimation.observe(
+            viewLifecycleOwner,
+            Observer {
+                imv_antenna_animation.setImageResource(
+                    resources.getIdentifier(ANTENNA_LOOP, "drawable", activity?.packageName)
+                )
+                (imv_antenna_animation.drawable as AnimationDrawable).start()
+            }
+        )
+
+        viewModel.authAttemptState.observe(
             viewLifecycleOwner,
             Observer { startSignInFlow() }
         )
-    }
 
-    private fun showErrorState(errorMessage: String?) {
-        setStatusDrawable(ANTENNA_EMPTY)
-        setLoginStatus(errorMessage!!)
-    }
-
-    private fun showLoadingState() {
-        setStatusDrawable(ANTENNA_LOOP)
-        (imv_antenna_animation.drawable as AnimationDrawable).start()
-    }
-
-    private fun showUserState() {
-        setLoginStatus(SIGNED_IN)
-        setAuthButton(SIGN_OUT)
-        setStatusDrawable(ANTENNA_FULL)
-    }
-
-    private fun showNullUserState() {
-        setLoginStatus(SIGNED_OUT)
-        setAuthButton(SIGN_IN)
-        setStatusDrawable(ANTENNA_EMPTY)
-    }
-
-    fun setLoginStatus(text: String) {
-        lbl_login_status_display.text = text
-    }
-
-    fun setAuthButton(text: String) {
-        btn_auth_attempt.text = text
-    }
-
-    fun setStatusDrawable(imageURL: String) {
-        imv_antenna_animation.setImageResource(
-            resources.getIdentifier(imageURL, "drawable", activity?.packageName)
+        viewModel.satelliteDrawable.observe(
+            viewLifecycleOwner,
+            Observer {
+                imv_antenna_animation.setImageResource(
+                    resources.getIdentifier(it, "drawable", activity?.packageName)
+                )
+            }
         )
     }
 
@@ -143,7 +114,6 @@ class LoginView : Fragment() {
             NoteActivity::class.java
         )
     )
-
 
     private fun startSignInFlow() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

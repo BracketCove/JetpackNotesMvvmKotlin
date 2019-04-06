@@ -24,7 +24,7 @@ buildscript {
         ktxVersion = '1.0.1'
         lifecycleVersion = '2.1.0-alpha03'
         materialVersion = '1.0.0'
-        navigationVersion = '2.0.0-rc02'
+        navigationVersion = '2.1.0-alpha01'
         recyclerViewVersion = '1.1.0-alpha03'
         roomVersion = '2.1.0-alpha04'
         runnerVersion = '1.0.1'
@@ -45,7 +45,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
         classpath 'com.google.gms:google-services:4.2.0'
-        classpath 'io.fabric.tools:gradle:1.26.1'
+        classpath 'io.fabric.tools:gradle:1.28.0'
     }
 }
 
