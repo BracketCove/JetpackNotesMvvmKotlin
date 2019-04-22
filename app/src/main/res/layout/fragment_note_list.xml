@@ -65,15 +65,13 @@
             android:id="@+id/rec_list_fragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="0dp"
             android:background="@color/colorTransparentBlack"
-            android:visibility="invisible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbl_toolbar_title" />
+            app:layout_constraintTop_toBottomOf="@+id/lbl_toolbar_title" android:visibility="invisible"/>
 
     <ImageView
             android:id="@+id/imv_satellite_animation"

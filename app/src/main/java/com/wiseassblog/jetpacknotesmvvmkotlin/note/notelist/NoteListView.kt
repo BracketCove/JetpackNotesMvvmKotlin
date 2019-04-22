@@ -13,11 +13,8 @@ import com.wiseassblog.jetpacknotesmvvmkotlin.R
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.makeToast
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.startWithFade
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.NoteListViewModel
-import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailEvent
-import com.wiseassblog.jetpacknotesmvvmkotlin.note.notedetail.NoteDetailViewArgs
 import com.wiseassblog.jetpacknotesmvvmkotlin.note.notelist.buildlogic.NoteListInjector
 import kotlinx.android.synthetic.main.fragment_note_list.*
-import kotlin.properties.Delegates
 
 class NoteListView : Fragment() {
 
@@ -34,6 +31,7 @@ class NoteListView : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        //THIS IS IMPORTANT!!!
         rec_list_fragment.adapter = null
     }
 
@@ -90,6 +88,7 @@ class NoteListView : Fragment() {
             viewLifecycleOwner,
             Observer { noteList ->
                 adapter.submitList(noteList)
+
                 if (noteList.isNotEmpty()) {
                     (imv_satellite_animation.drawable as AnimationDrawable).stop()
                     imv_satellite_animation.visibility = View.INVISIBLE

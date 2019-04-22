@@ -26,7 +26,7 @@ class UserViewModel(
     private val userState = MutableLiveData<User>()
 
     //Control Logic
-    internal val authAttemptState = MutableLiveData<Unit>()
+    internal val authAttempt = MutableLiveData<Unit>()
     internal val startAnimation = MutableLiveData<Unit>()
 
     //UI Binding
@@ -68,6 +68,26 @@ class UserViewModel(
         }
     }
 
+    private fun getUser() = launch {
+        val result = repo.getCurrentUser()
+        when (result) {
+            is Result.Value -> {
+                userState.value = result.value
+                if (result.value == null) showSignedOutState()
+                else showSignedInState()
+            }
+            is Result.Error -> showErrorState()
+        }
+    }
+
+    /**
+     * If user is null, tell the View to begin the authAttempt. Else, attempt to sign the user out
+     */
+    private fun onAuthButtonClick() {
+        if (userState.value == null) authAttempt.value = Unit
+        else signOutUser()
+    }
+
     private fun onSignInResult(result: LoginResult) = launch {
         if (result.requestCode == RC_SIGN_IN && result.userToken != null) {
 
@@ -83,14 +103,6 @@ class UserViewModel(
         }
     }
 
-    /**
-     * If user is null, tell the View to begin the authAttempt. Else, attempt to sign the user out
-     */
-    private fun onAuthButtonClick() {
-        if (userState.value == null) authAttemptState.value = Unit
-        else signOutUser()
-    }
-
     private fun signOutUser() = launch {
         val result = repo.signOutCurrentUser()
 
@@ -103,15 +115,5 @@ class UserViewModel(
         }
     }
 
-    private fun getUser() = launch {
-        val result = repo.getCurrentUser()
-        when (result) {
-            is Result.Value -> {
-                userState.value = result.value
-                if (result.value == null) showSignedOutState()
-                else showSignedInState()
-            }
-            is Result.Error -> showErrorState()
-        }
-    }
+
 }

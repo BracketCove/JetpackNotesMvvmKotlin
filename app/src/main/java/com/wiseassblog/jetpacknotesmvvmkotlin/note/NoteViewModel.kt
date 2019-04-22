@@ -24,10 +24,8 @@ class NoteViewModel(
     private val deletedState = MutableLiveData<Boolean>()
     val deleted: LiveData<Boolean> get() = deletedState
 
-
     private val updatedState = MutableLiveData<Boolean>()
     val updated: LiveData<Boolean> get() = updatedState
-
 
     override fun handleEvent(event: NoteDetailEvent) {
         when (event) {
@@ -70,7 +68,7 @@ class NoteViewModel(
         }
     }
 
-    private suspend fun newNote() {
+    private fun newNote() {
         noteState.value =
             Note(getCalendarTime(), "", 0, "rocket_loop", null)
     }

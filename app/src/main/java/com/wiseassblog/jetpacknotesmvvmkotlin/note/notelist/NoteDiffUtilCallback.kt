@@ -12,5 +12,4 @@ class NoteDiffUtilCallback : DiffUtil.ItemCallback<Note>(){
     override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
         return oldItem.creationDate == newItem.creationDate
     }
-
 }

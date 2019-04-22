@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseViewModel<T>(protected val uiContext: CoroutineContext): ViewModel(), CoroutineScope {
+abstract class BaseViewModel<T>(protected val uiContext: CoroutineContext) : ViewModel(), CoroutineScope {
     abstract fun handleEvent(event: T)
 
     protected lateinit var jobTracker: Job
@@ -15,6 +15,8 @@ abstract class BaseViewModel<T>(protected val uiContext: CoroutineContext): View
     init {
         jobTracker = Job()
     }
+
+
 
     //suggestion from Al Warren: to promote encapsulation and immutability, hide the MutableLiveData objects behind
     //LiveData references:

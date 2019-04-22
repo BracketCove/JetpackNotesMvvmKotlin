@@ -18,8 +18,6 @@ class FirebaseUserRepoImpl(val auth: FirebaseAuth = FirebaseAuth.getInstance()) 
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             awaitTaskCompletable(auth.signInWithCredential(credential))
 
-            Tasks.await(auth.signInWithCredential(credential))
-
             Result.build { Unit }
         } catch (e: Exception) {
             Result.build { throw e }

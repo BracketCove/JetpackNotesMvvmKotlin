@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -93,7 +94,7 @@ class LoginView : Fragment() {
             }
         )
 
-        viewModel.authAttemptState.observe(
+        viewModel.authAttempt.observe(
             viewLifecycleOwner,
             Observer { startSignInFlow() }
         )
