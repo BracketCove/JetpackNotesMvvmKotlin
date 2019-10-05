@@ -26,31 +26,30 @@ class FirebaseNoteRepoImpl(
 
 
     override suspend fun getNoteById(noteId: String): Result<Exception, Note> {
-        return if (activeUser()) getRemoteNote(noteId)
+        return if (hasActiveUser()) getRemoteNote(noteId)
         else getLocalNote(noteId)
     }
 
     override suspend fun deleteNote(note: Note): Result<Exception, Unit> {
-        return if (activeUser()) deleteRemoteNote(note)
+        return if (hasActiveUser()) deleteRemoteNote(note)
         else deleteLocalNote(note)
     }
 
     override suspend fun updateNote(note: Note): Result<Exception, Unit> {
-        return if (activeUser()) updateRemoteNote(note)
+        return if (hasActiveUser()) updateRemoteNote(note)
         else updateLocalNote(note)
     }
 
     override suspend fun getNotes(): Result<Exception, List<Note>> {
-        return if (activeUser()) getRemoteNotes()
+        return if (hasActiveUser()) getRemoteNotes()
         else getLocalNotes()
     }
 
-    private fun activeUser(): Boolean {
-        val user = firebaseAuth.currentUser
+    /**
+     * if currentUser != null, return true
+     */
+    private fun hasActiveUser(): Boolean = (firebaseAuth.currentUser != null)
 
-        if (user == null) return false
-        else return true
-    }
 
     private fun resultToNoteList(result: QuerySnapshot?): Result<Exception, List<Note>> {
         val noteList = mutableListOf<Note>()

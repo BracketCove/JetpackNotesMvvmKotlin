@@ -10,6 +10,7 @@ import kotlin.coroutines.CoroutineContext
 abstract class BaseViewModel<T>(protected val uiContext: CoroutineContext) : ViewModel(), CoroutineScope {
     abstract fun handleEvent(event: T)
 
+    //cancellation
     protected lateinit var jobTracker: Job
 
     init {

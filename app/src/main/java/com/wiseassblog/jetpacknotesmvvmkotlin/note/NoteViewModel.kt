@@ -44,6 +44,7 @@ class NoteViewModel(
         }
     }
 
+
     private fun updateNote(contents: String) = launch {
         val updateResult = noteRepo.updateNote(
             note.value!!

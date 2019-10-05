@@ -1,6 +1,5 @@
 package com.wiseassblog.jetpacknotesmvvmkotlin.model.implementations
 
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.wiseassblog.jetpacknotesmvvmkotlin.common.Result
@@ -19,9 +18,10 @@ class FirebaseUserRepoImpl(val auth: FirebaseAuth = FirebaseAuth.getInstance()) 
             awaitTaskCompletable(auth.signInWithCredential(credential))
 
             Result.build { Unit }
-        } catch (e: Exception) {
-            Result.build { throw e }
+        } catch (exception: Exception) {
+            Result.build { throw exception }
         }
+
     }
 
 
@@ -34,13 +34,15 @@ class FirebaseUserRepoImpl(val auth: FirebaseAuth = FirebaseAuth.getInstance()) 
     override suspend fun getCurrentUser(): Result<Exception, User?> {
         val firebaseUser = auth.currentUser
 
-        if (firebaseUser == null) {
-            return Result.build { null }
-        } else return Result.build {
-            User(
-                firebaseUser.uid,
-                firebaseUser.displayName ?: ""
-            )
+        return if (firebaseUser == null) {
+            Result.build { null }
+        } else {
+            Result.build {
+                User(
+                    firebaseUser.uid,
+                    firebaseUser.displayName ?: ""
+                )
+            }
         }
     }
 }

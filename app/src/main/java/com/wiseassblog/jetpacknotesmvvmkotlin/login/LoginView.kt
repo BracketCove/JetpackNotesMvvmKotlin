@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -43,7 +43,7 @@ class LoginView : Fragment() {
     //Create and bind to ViewModel
     override fun onStart() {
         super.onStart()
-        viewModel = ViewModelProviders.of(
+        viewModel = ViewModelProvider(
             this,
             LoginInjector(requireActivity().application).provideUserViewModelFactory()
         ).get(UserViewModel::class.java)
@@ -62,10 +62,11 @@ class LoginView : Fragment() {
 
         imb_toolbar_back.setOnClickListener { startListActivity() }
 
-        requireActivity().addOnBackPressedCallback(viewLifecycleOwner, OnBackPressedCallback {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
             startListActivity()
-            true
-        })
+        }
+
+
     }
 
     private fun observeViewModel() {
@@ -129,7 +130,7 @@ class LoginView : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //TODO: Make sure that this is called after onStart()
+
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         var userToken: String? = null
 
@@ -137,9 +138,8 @@ class LoginView : Fragment() {
             val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
 
             if (account != null) userToken = account.idToken
-
         } catch (exception: Exception) {
-            Log.d("Login", exception.toString())
+            Log.d("LOGIN", exception.toString())
         }
 
         viewModel.handleEvent(

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.wiseassblog.jetpacknotesmvvmkotlin.R
@@ -33,7 +35,7 @@ class NoteDetailView : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        viewModel = ViewModelProviders.of(
+        viewModel = ViewModelProvider(
             this,
             NoteDetailInjector(requireActivity().application).provideNoteViewModelFactory()
         ).get(
@@ -93,10 +95,9 @@ class NoteDetailView : Fragment() {
             }
         )
 
-        requireActivity().addOnBackPressedCallback(viewLifecycleOwner, OnBackPressedCallback {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.noteListView)
-            true
-        })
+        }
     }
 
     private fun showErrorState(errorMessage: String?) {
