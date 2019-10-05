@@ -18,7 +18,7 @@ private const val COLLECTION_NAME = "notes"
  * separate interfaces which this class would depend on). I wanted to keep it the back end simple since this app is
  * a demo on MVVM, which is a front end architecture pattern.
  */
-class FirebaseNoteRepoImpl(
+class NoteRepoImpl(
     val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
     val remote: FirebaseFirestore = FirebaseFirestore.getInstance(),
     val local: NoteDao
@@ -118,24 +118,24 @@ class FirebaseNoteRepoImpl(
     }
 
     /* Local Datasource */
-    private suspend fun getLocalNotes(): Result<Exception, List<Note>> = withContext(Dispatchers.IO)
-    { Result.build { local.getNotes().toNoteListFromRoomNote() } }
+    private suspend fun getLocalNotes(): Result<Exception, List<Note>> = Result.build {
+        local.getNotes().toNoteListFromRoomNote()
+    }
 
-    private suspend fun getLocalNote(id: String): Result<Exception, Note> =
-        withContext(Dispatchers.IO) { Result.build { local.getNoteById(id).toNote } }
+    private suspend fun getLocalNote(id: String): Result<Exception, Note> = Result.build {
+        local.getNoteById(id).toNote
+    }
 
-    private suspend fun deleteLocalNote(note: Note): Result<Exception, Unit> = withContext(Dispatchers.IO) {
+    private suspend fun deleteLocalNote(note: Note): Result<Exception, Unit> = Result.build {
         local.deleteNote(note.toRoomNote)
-        Result.build { Unit }
+        Unit
     }
 
-    private suspend fun updateLocalNote(note: Note): Result<Exception, Unit> = withContext(Dispatchers.IO) {
-        val updated = local.insertOrUpdateNote(note.toRoomNote)
-
-        when {
-            updated == 0L -> Result.build { throw Exception() }
-            else -> Result.build { Unit }
-        }
+    private suspend fun updateLocalNote(note: Note): Result<Exception, Unit> = Result.build {
+        local.insertOrUpdateNote(note.toRoomNote)
+        Unit
     }
+
+
 
 }

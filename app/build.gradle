@@ -51,6 +51,9 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.firebaseCrash"
     implementation "com.google.firebase:firebase-firestore:$rootProject.firebaseFirestore"
     implementation "androidx.room:room-runtime:$rootProject.room"
+    implementation "androidx.room:room-ktx:$rootProject.room"
+
+
     kapt "androidx.room:room-compiler:$rootProject.room"
 
 
