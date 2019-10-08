@@ -7,9 +7,8 @@ import com.wiseassblog.jetpacknotesmvvmkotlin.common.*
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.FirebaseNote
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.NoteDao
+import com.wiseassblog.jetpacknotesmvvmkotlin.model.User
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.repository.INoteRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 private const val COLLECTION_NAME = "notes"
 
@@ -26,36 +25,42 @@ class NoteRepoImpl(
 
 
     override suspend fun getNoteById(noteId: String): Result<Exception, Note> {
-        return if (hasActiveUser()) getRemoteNote(noteId)
+        val user = getActiveUser()
+        return if (user != null) getRemoteNote(noteId, user)
         else getLocalNote(noteId)
     }
 
     override suspend fun deleteNote(note: Note): Result<Exception, Unit> {
-        return if (hasActiveUser()) deleteRemoteNote(note)
+        val user = getActiveUser()
+        return if (user != null) deleteRemoteNote(note.copy(creator = user))
         else deleteLocalNote(note)
     }
 
     override suspend fun updateNote(note: Note): Result<Exception, Unit> {
-        return if (hasActiveUser()) updateRemoteNote(note)
+        val user = getActiveUser()
+        return if (user != null) updateRemoteNote(note.copy(creator = user))
         else updateLocalNote(note)
     }
 
     override suspend fun getNotes(): Result<Exception, List<Note>> {
-        return if (hasActiveUser()) getRemoteNotes()
+        val user = getActiveUser()
+        return if (user != null) getRemoteNotes(user)
         else getLocalNotes()
     }
 
     /**
      * if currentUser != null, return true
      */
-    private fun hasActiveUser(): Boolean = (firebaseAuth.currentUser != null)
+    private fun getActiveUser(): User? {
+        return firebaseAuth.currentUser?.toUser
+    }
 
 
     private fun resultToNoteList(result: QuerySnapshot?): Result<Exception, List<Note>> {
         val noteList = mutableListOf<Note>()
 
-        result?.forEach { documentSnapshop ->
-            noteList.add(documentSnapshop.toObject(FirebaseNote::class.java).toNote)
+        result?.forEach { documentSnapshot ->
+            noteList.add(documentSnapshot.toObject(FirebaseNote::class.java).toNote)
         }
 
         return Result.build {
@@ -66,47 +71,56 @@ class NoteRepoImpl(
 
     /* Remote Datasource */
 
-    private suspend fun getRemoteNotes(): Result<Exception, List<Note>> {
-        var reference = remote.collection(COLLECTION_NAME)
-
+    private suspend fun getRemoteNotes(user: User): Result<Exception, List<Note>> {
         return try {
-            val task = awaitTaskResult(reference.get())
+            val task = awaitTaskResult(
+                remote.collection(COLLECTION_NAME)
+                    .whereEqualTo("creator", user.uid)
+                    .get()
+            )
 
-            return resultToNoteList(task)
+            resultToNoteList(task)
         } catch (exception: Exception) {
             Result.build { throw exception }
         }
     }
 
-    private suspend fun getRemoteNote(id: String): Result<Exception, Note> {
-        var reference = remote.collection(COLLECTION_NAME)
-            .document(id)
-
+    private suspend fun getRemoteNote(creationDate: String, user: User): Result<Exception, Note> {
         return try {
-            val task = awaitTaskResult(reference.get())
+            val task = awaitTaskResult(
+                remote.collection(COLLECTION_NAME)
+                    .document(creationDate + user.uid)
+                    .get()
+            )
 
             Result.build {
+                //Task<DocumentSnapshot!>
                 task.toObject(FirebaseNote::class.java)?.toNote ?: throw Exception()
             }
         } catch (exception: Exception) {
             Result.build { throw exception }
         }
-
     }
 
     private suspend fun deleteRemoteNote(note: Note): Result<Exception, Unit> = Result.build {
         awaitTaskCompletable(
             remote.collection(COLLECTION_NAME)
-                .document(note.creationDate)
+                .document(note.creationDate + note.creator!!.uid)
                 .delete()
         )
     }
 
+    /**
+     * Notes are stored with the following composite document name:
+     * note.creationDate + note.creator.uid
+     * The reason for this, is that if I just used the creationDate, hypothetically two users
+     * creating a note at the same time, would have duplicate entries in the cloud database :(
+     */
     private suspend fun updateRemoteNote(note: Note): Result<Exception, Unit> {
         return try {
             awaitTaskCompletable(
                 remote.collection(COLLECTION_NAME)
-                    .document(note.creationDate)
+                    .document(note.creationDate + note.creator!!.uid)
                     .set(note.toFirebaseNote)
             )
 

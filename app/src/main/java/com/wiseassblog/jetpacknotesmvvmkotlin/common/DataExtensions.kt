@@ -2,6 +2,7 @@ package com.wiseassblog.jetpacknotesmvvmkotlin.common
 
 import android.text.Editable
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseUser
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.FirebaseNote
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.Note
 import com.wiseassblog.jetpacknotesmvvmkotlin.model.RoomNote
@@ -30,6 +31,12 @@ internal suspend fun <T> awaitTaskCompletable(task: Task<T>): Unit = suspendCoro
         }
     }
 }
+
+internal val FirebaseUser.toUser: User
+    get() = User(
+        uid = this.uid,
+        name = this.displayName ?: ""
+    )
 
 internal val FirebaseNote.toNote: Note
     get() = Note(
