@@ -1,36 +1,30 @@
 
 buildscript {
     ext {
-        compileSdkVersion = 28
+        compileSdkVersion = 30
         minSdkVersion = 21
-        targetSdkVersion = 28
+        targetSdkVersion = 30
 
-        playServicesAuth = "17.0.0"
-        firebaseAuth = "19.1.0"
-        firebaseCrash = "2.10.1"
-        firebaseCore = "17.2.0"
-        firebaseFirestore = "21.1.1"
-        constraintLayoutVersion = '2.0.0-beta2'
-        coreTestingVersion = '2.0.0'
-        room = '2.2.0-rc01'
-        coroutinesVersion = "1.1.1"
-        espressoVersion = '3.1.0-alpha4'
+        playServicesAuth = "19.0.0"
+        firebaseAuth = "20.0.1"
+        firebaseCore = "18.0.0"
+        firebaseFirestore = "22.0.1"
+        constraintLayoutVersion = '2.1.0-alpha2'
+        room = '2.3.0-alpha04'
+        coroutinesVersion = "1.4.1"
         glideVersion = '4.8.0'
         gradleVersion = '3.3.2'
-        gsonVersion = '2.8.2'
         junitVersion = '5.3.1'
-        kotlinVersion = '1.3.31'
+        kotlinVersion = '1.4.10'
         ktlintVersion = '0.30.0'
-        ktxVersion = '1.1.0'
-        lifecycleVersion = '2.2.0-alpha05'
-        materialVersion = '1.0.0'
-        navigationVersion = '2.2.0-alpha03'
-        recyclerViewVersion = '1.1.0-beta04'
+        ktxVersion = '1.3.2'
+        lifecycleVersion = '2.2.0'
+        materialVersion = '1.2.1'
+        navigationVersion = '2.3.2'
+        recyclerViewVersion = '1.2.0-beta01'
         roomVersion = '2.1.0-alpha04'
         runnerVersion = '1.0.1'
-        supportLibraryVersion = '1.1.0'
-        uiAutomatorVersion = '2.2.0'
-        workVersion = '1.0.0'
+        supportLibraryVersion = '1.2.0'
     }
 
     repositories {
@@ -41,10 +35,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
-        classpath 'com.google.gms:google-services:4.3.2'
+        classpath 'com.google.gms:google-services:4.3.4'
         classpath 'io.fabric.tools:gradle:1.28.0'
     }
 }

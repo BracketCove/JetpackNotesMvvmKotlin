@@ -73,8 +73,8 @@ class NoteListView : Fragment() {
                 viewModel.handleEvent(it)
             }
         )
-        rec_list_fragment.adapter = adapter
 
+        rec_list_fragment.adapter = adapter
     }
 
     private fun observeViewModel() {
